@@ -1,0 +1,7 @@
+deb http://xbian.brantje.com stable main
+### deb http://xbian.brantje.com staging main
+### deb http://xbian.brantje.com devel main
+
+deb http://xbian.brantje.com/__ARCH__ stable main
+### deb http://xbian.brantje.com/__ARCH__ staging main
+### deb http://xbian.brantje.com/__ARCH__ devel main

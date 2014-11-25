@@ -1,0 +1,8 @@
+Origin: XBian
+Package: xbian-package-repo
+Version: 1.0.3-1
+Section: repository
+Priority: optional
+Architecture: armhf
+Maintainer: mk01 <development@xbian.org>
+Description: XBian repository package. It installs XBian public apt keys and sources files.
