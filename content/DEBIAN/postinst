@@ -9,9 +9,9 @@ if [ $1 = "configure" ]; then
     if [ "$(grep -c '^deb\|^#' /etc/apt/sources.list.d/xbian.list)" -eq 3 ]; then
         for repo in stable staging devel; do
             if grep -qe "^#.*$repo" /etc/apt/sources.list.d/xbian.list; then
-                echo "### deb http://xbian.brantje.com/__ARCH__ $repo main" >> /etc/apt/sources.list.d/xbian.list
+                echo "### deb http://apt.xbian.org/__ARCH__ $repo main" >> /etc/apt/sources.list.d/xbian.list
             else
-                echo "deb http://xbian.brantje.com/__ARCH__ $repo main" >> /etc/apt/sources.list.d/xbian.list
+                echo "deb http://apt.xbian.org/__ARCH__ $repo main" >> /etc/apt/sources.list.d/xbian.list
             fi
         done
     fi
