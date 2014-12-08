@@ -1,7 +1,3 @@
-### deb http://apt.xbian.org stable main
-### deb http://apt.xbian.org staging main
-### deb http://apt.xbian.org devel main
-
-deb http://apt.xbian.org/__ARCH__ stable main
-### deb http://apt.xbian.org/__ARCH__ staging main
-### deb http://apt.xbian.org/__ARCH__ devel main
+deb mirror://apt.xbian.org/mirror.txt      stable  main __ARCH__
+### deb mirror://apt.xbian.org/mirror.txt  staging main __ARCH__
+### deb mirror://apt.xbian.org/mirror.txt  devel   main __ARCH__

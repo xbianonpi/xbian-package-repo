@@ -1,3 +1,17 @@
 #!/bin/sh
 
+echo
+echo " !!!!!"
+echo
+echo "THIS SPECIFIC REPO PKG UPDATE WILL UNCONDITIONALLY REPLACE"
+echo "/etc/apt/sources.list.d/xbian.list WITH A NEW VERSION"
+echo
+echo "RECHECK/MODIFY AFTER IF YOU USED TO CUSTOMISE IT"
+echo
+echo " !!!!!"
+echo
+
+rm -f /etc/apt/sources.list.d/xbian.list ||:
+[ ! -e /etc/apt/sources.list.d/xbian.list ] && cp /var/tmp/xbian.list /etc/apt/sources.list.d || :
+
 exit 0

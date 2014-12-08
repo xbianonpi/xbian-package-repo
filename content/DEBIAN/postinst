@@ -2,23 +2,23 @@
 
 if [ $1 = "configure" ]; then
 
-    for k in /var/tmp/xbian.key/*; do 
+    for k in /var/tmp/xbian.key/*.key; do 
         apt-key add $k
     done
 
-    if [ "$(grep -c '^deb\|^#' /etc/apt/sources.list.d/xbian.list)" -eq 3 ]; then
-        for repo in stable staging devel; do
-            if grep -qe "^#.*$repo" /etc/apt/sources.list.d/xbian.list; then
-                echo "### deb http://apt.xbian.org/__ARCH__ $repo main" >> /etc/apt/sources.list.d/xbian.list
-            else
-                echo "deb http://apt.xbian.org/__ARCH__ $repo main" >> /etc/apt/sources.list.d/xbian.list
-            fi
-        done
-    fi
+    [ $(xbian-arch) = iMX6 ] && disrepos=devel || disrepos="staging devel"
+
+    for repo in stable staging devel; do
+        if ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
+            echo $disrepos | grep -q $repo && commentedout='### ' || commentedout=''
+            echo "${commentedout}deb mirror://apt.xbian.org/mirror.txt     $repo   main    __ARCH__" >> /etc/apt/sources.list.d/xbian.list
+        fi
+    done
 
     if which xbian-arch >/dev/null; then
         sed -i "s%__ARCH__%$(xbian-arch | tr '[:upper:]' '[:lower:]')-$(lsb_release  -a 2>/dev/null| grep Codename | awk '{print $2}')%g" /etc/apt/sources.list.d/xbian.list
     else
         sed -i "s%__ARCH__%$config_platform-$(lsb_release -c -s)%g" /etc/apt/sources.list.d/xbian.list
     fi
+
 fi
