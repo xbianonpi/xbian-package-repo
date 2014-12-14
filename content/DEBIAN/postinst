@@ -6,7 +6,7 @@ if [ $1 = "configure" ]; then
         apt-key add $k
     done
 
-    [ $(xbian-arch) = iMX6 ] && disrepos=devel || disrepos="staging devel"
+    [ "$(xbian-arch 2>/dev/null)" = iMX6 -o "$config_platform" = imx6 ] && disrepos=devel || disrepos="staging devel"
 
     for repo in stable staging devel; do
         if ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
