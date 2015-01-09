@@ -3,7 +3,7 @@
 if [ $1 = "configure" ]; then
 
     grep -q BCM2708 /proc/cpuinfo 2>/dev/null && config_platform=rpi
-    grep -q "i.MX6" /proc/cpuinfo && config_platform=imx6
+    grep -q "i.MX6" /proc/cpuinfo 2>/dev/null && config_platform=imx6
 
     version="";
     if which lsb_release >/dev/null; then
