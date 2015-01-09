@@ -2,6 +2,19 @@
 
 if [ $1 = "configure" ]; then
 
+    grep -q BCM2708 /proc/cpuinfo 2>/dev/null && config_platform=rpi
+    grep -q "i.MX6" /proc/cpuinfo && config_platform=imx6
+
+    version="";
+    if which lsb_release >/dev/null; then
+        version=$(lsb_release -c -s);
+    elif [ -f /etc/debian_version ]; then
+        grep -q "7\.*" && version="wheezy"
+        grep -q "8\.*" && version="jessie"
+    else
+        echo "could not determine running OS version"
+    fi
+
     for k in /var/tmp/xbian.key/*.key; do 
         apt-key add $k
     done
@@ -16,9 +29,9 @@ if [ $1 = "configure" ]; then
     done
 
     if which xbian-arch >/dev/null; then
-        sed -i "s%__ARCH__%$(xbian-arch | tr '[:upper:]' '[:lower:]')-$(lsb_release  -a 2>/dev/null| grep Codename | awk '{print $2}')%g" /etc/apt/sources.list.d/xbian.list
+        sed -i "s%__ARCH__%$(xbian-arch | tr '[:upper:]' '[:lower:]')-$version%g" /etc/apt/sources.list.d/xbian.list
     else
-        sed -i "s%__ARCH__%$config_platform-$(lsb_release -c -s)%g" /etc/apt/sources.list.d/xbian.list
+        sed -i "s%__ARCH__%$config_platform-$version%g" /etc/apt/sources.list.d/xbian.list
     fi
 
 fi
