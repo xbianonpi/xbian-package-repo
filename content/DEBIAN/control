@@ -1,6 +1,6 @@
 Origin: XBian
 Package: xbian-package-repo
-Version: 1.0.6-3
+Version: 1.0.6-4
 Section: repository
 Priority: optional
 Architecture: armhf
