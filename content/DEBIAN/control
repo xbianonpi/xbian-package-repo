@@ -1,7 +1,8 @@
 Origin: XBian
 Package: xbian-package-repo
-Version: 1.0.6-4
+Version: 1.0.6-5
 Section: repository
+Pre-Depends: lsb-release
 Priority: optional
 Architecture: armhf
 Maintainer: mk01 <development@xbian.org>
