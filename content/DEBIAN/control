@@ -1,6 +1,6 @@
 Origin: XBian
 Package: xbian-package-repo
-Version: 1.0.6-5
+Version: 1.0.9
 Section: repository
 Pre-Depends: lsb-release
 Priority: optional

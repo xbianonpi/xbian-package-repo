@@ -1,4 +1,4 @@
-Package: linux-image-3.10.30-armmp linux-image-3.10.51-armmp linux-image-3.14.14-armmp linux-image-3.14.27-armmp linux-libc-dev
+Package: linux-image-3.10.30-armmp linux-image-3.10.51-armmp linux-image-3.14.14-armmp linux-image-3.14.27-armmp linux-libc-dev linux-image-armmp
 Pin: release o=XBian
 Pin-Priority: 1001
 
@@ -19,5 +19,9 @@ Pin: release o=XBian
 Pin-Priority: 1001
 
 Package: libcurl3 curl libcurl3-gnutls
+Pin: release o=XBian
+Pin-Priority: 1001
+
+Package: libdrm2 xserver-common xserver-xorg-core xserver-xorg-dev  xserver-xorg-input-mouse xserver-xorg-input-kbd xserver-xorg-input-evdev xserver-xorg-input-synaptics xserver-xorg-video-modesetting
 Pin: release o=XBian
 Pin-Priority: 1001
