@@ -1,0 +1,18 @@
+#!/bin/sh
+
+dpkg --compare-versions $(dpkg-query -f '${Version}\n' -W xbian-package-repo) ge 1.0.6-2 && exit 0 || :
+
+echo
+echo " !!!!!"
+echo
+echo "THIS SPECIFIC REPO PKG UPDATE WILL UNCONDITIONALLY REPLACE"
+echo "/etc/apt/sources.list.d/xbian.list WITH A NEW VERSION"
+echo
+echo "RECHECK/MODIFY AFTER IF YOU USED TO CUSTOMISE IT"
+echo
+echo " !!!!!"
+echo
+
+echo "deb mirror://apt.xbian.org/mirror.txt      stable  main __ARCH__" > /etc/apt/sources.list.d/xbian.list
+
+exit 0

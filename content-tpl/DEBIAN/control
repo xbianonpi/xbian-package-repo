@@ -1,10 +1,10 @@
 Origin: XBian
 Package: xbian-package-repo
-Version: 20150203-0
+Version: __DATE__
 Section: repository
 Pre-Depends: lsb-release
 Priority: optional
 Architecture: armhf
 Maintainer: mk01 <development@xbian.org>
 Replaces: xbian-update
-Description: XBian repository package 20150203-0. It installs XBian public apt keys and sources files.
+Description: XBian repository package __DATE__. It installs XBian public apt keys and sources files.
