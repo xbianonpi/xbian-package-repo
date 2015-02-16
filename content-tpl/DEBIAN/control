@@ -6,5 +6,6 @@ Pre-Depends: lsb-release
 Priority: optional
 Architecture: armhf
 Maintainer: mk01 <development@xbian.org>
+Conflicts: update-notifier-common
 Replaces: xbian-update
 Description: XBian repository package __DATE__. It installs XBian public apt keys and sources files.
