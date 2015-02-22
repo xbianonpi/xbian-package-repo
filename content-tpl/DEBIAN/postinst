@@ -11,8 +11,8 @@ if [ $1 = "configure" ]; then
     if which lsb_release >/dev/null; then
         version=$(lsb_release -c -s);
     elif [ -f /etc/debian_version ]; then
-        grep -q "7\.*" && version="wheezy"
-        grep -q "8\.*" && version="jessie"
+        grep -q "7\.*" /etc/debian_version && version="wheezy"
+        grep -q "8\.*" /etc/debian_version && version="jessie"
     else
         echo "could not determine running OS version"
     fi
