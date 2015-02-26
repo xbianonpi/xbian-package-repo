@@ -1,4 +1,4 @@
-Package: linux-image-3.10.30-armmp linux-image-3.10.51-armmp linux-image-3.14.14-armmp linux-image-3.14.27-armmp linux-libc-dev linux-image-armmp
+Package: linux-image-3.10.30-armmp linux-image-3.10.51-armmp linux-image-3.14.14-armmp linux-image-3.14.27-armmp linux-image-3.14.28-armmp linux-image-3.14.33-armmp linux-libc-dev linux-image-armmp
 Pin: release o=XBian
 Pin-Priority: 1001
 
@@ -6,7 +6,7 @@ Package: btrfs-tools
 Pin: release o=XBian
 Pin-Priority: 1001
 
-Package: xserver-xorg-video-vivante
+Package: xserver-xorg-video-viv-imx
 Pin: release o=XBian
 Pin-Priority: 1001
 
@@ -14,7 +14,7 @@ Package: linux-headers-3.10.30-armmp linux-headers-3.10.51-armmp linux-headers-3
 Pin: release o=XBian
 Pin-Priority: 1001
 
-Package: firmware-imx
+Package: firmware-imx libcec2
 Pin: release o=XBian
 Pin-Priority: 1001
 
