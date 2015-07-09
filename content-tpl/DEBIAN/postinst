@@ -6,6 +6,7 @@ if [ $1 = "configure" ]; then
     grep -q BCM2836 /proc/cpuinfo 2>/dev/null && config_platform=rpi
     grep -q "i.MX6" /proc/cpuinfo 2>/dev/null && config_platform=imx6
     grep -q sun7i /proc/cpuinfo 2>/dev/null && config_platform=bpi
+    grep -q 'rpi2\-jessie' /etc/apt/sources.list.d/xbian.list && config_platform=rpi2
 
     version="";
     if which lsb_release >/dev/null; then
@@ -27,7 +28,7 @@ if [ $1 = "configure" ]; then
         fi
     done
 
-    if which xbian-arch >/dev/null; then
+    if which xbian-arch >/dev/null && [ $config_platform != rpi2 ]; then
         sed -i "s%__ARCH__%$(xbian-arch | tr '[:upper:]' '[:lower:]')-$version%g" /etc/apt/sources.list.d/xbian.list
     else
         sed -i "s%__ARCH__%$config_platform-$version%g" /etc/apt/sources.list.d/xbian.list
