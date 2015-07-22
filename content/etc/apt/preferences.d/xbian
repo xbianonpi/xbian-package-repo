@@ -14,7 +14,7 @@ Package: linux-headers-3.10.30-armmp linux-headers-3.10.51-armmp linux-headers-3
 Pin: release o=XBian
 Pin-Priority: 1001
 
-Package: firmware-imx libcec2
+Package: firmware-imx libcec2 libcec libcec3 libcec-dev cec-utils
 Pin: release o=XBian
 Pin-Priority: 1001
 
