@@ -27,7 +27,7 @@ version1=$(date +%Y%m%d)
 
 version=$version1-$version2
 for f in $(find ./content-tpl -type f -printf "%P\n"); do
-    cp ./content-tpl/$f content/$f
+    cp -a ./content-tpl/$f content/$f
     sed -i "s%__DATE__%$version%g" ./content/$f
 done
 
