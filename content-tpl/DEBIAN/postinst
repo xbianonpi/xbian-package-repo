@@ -1,5 +1,23 @@
 #!/bin/sh +e
 
+install_keys() {
+    X=0;
+    while [ $(gpg --recv-keys 8B48AD6246925553; echo $?) -ne 0 ] && [ $X lt 10 ]; do
+        X=$(($X+1))
+    done
+    X=0;
+    while [ $(gpg --recv-keys 7638D0442B90D010; echo $?) -ne 0 ] && [ $X lt 10 ]; do
+        X=$(($X+1))
+    done
+    X=0
+    while [ $(gpg --recv-keys CBF8D6FD518E17E1; echo $?) -ne 0 ] && [ $X lt 10 ]; do
+        X=$(($X+1))
+    done
+    gpg --export -a 8B48AD6246925553 | sudo apt-key add -
+    gpg --export -a 7638D0442B90D010 | sudo apt-key add -
+    gpg --export -a CBF8D6FD518E17E1 | sudo apt-key add -
+}
+
 upgrade_wheezy_to_jessie()
 {
     [ -n "$1" ] || return 0
@@ -8,7 +26,8 @@ upgrade_wheezy_to_jessie()
     case $1 in
       rpi)
         sed -i "s%deb[\ ]*http://mirrordirector.raspbian.org/raspbian.*wheezy%deb http://mirrordirector.raspbian.org/raspbian/ stable%g" /etc/apt/sources.list
-
+        
+        install_keys
         echo "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
         ;;
       rpi2)
@@ -18,6 +37,7 @@ upgrade_wheezy_to_jessie()
               echo 'deb http://http.debian.net/debian stable main non-free' > /etc/apt/sources.list
             }
 
+        install_keys
         echo "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
         ;;
       *)
