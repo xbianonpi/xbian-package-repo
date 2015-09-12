@@ -18,7 +18,7 @@ upgrade_wheezy_to_jessie()
               echo 'deb http://http.debian.net/debian stable main non-free' > /etc/apt/sources.list
             }
 
-        echo -e "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
+        echo "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
         ;;
       *)
         ;;
