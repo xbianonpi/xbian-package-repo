@@ -29,6 +29,8 @@ upgrade_wheezy_to_jessie()
         
         install_keys
         echo "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
+
+        sed -i 's/rpi-wheezy/rpi-jessie/g' /etc/apt/sources.list.d/xbian.list
         ;;
       rpi2)
         [ -e /etc/dpkg/origins/raspbian -a ! -e /etc/apt/sources.list.old.xbian.upgrade.jessie ] && \
@@ -37,6 +39,7 @@ upgrade_wheezy_to_jessie()
               echo 'deb http://http.debian.net/debian stable main non-free' > /etc/apt/sources.list
             }
 
+        sed -i 's/rpi-wheezy/rpi2-jessie/g' /etc/apt/sources.list.d/xbian.list
         install_keys
         echo "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
         ;;
@@ -44,7 +47,6 @@ upgrade_wheezy_to_jessie()
         ;;
     esac
 
-    sed -i 's/-wheezy/-jessie/g' /etc/apt/sources.list.d/xbian.list
 }
 
 if [ $1 = "configure" ]; then
