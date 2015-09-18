@@ -88,6 +88,14 @@ if [ $1 = "configure" ]; then
         apt-key add $k
     done
 
+    #### if already migrated RPI2 to Debian/Jessie, but didn't change xbian.list to rpi2-jessie, do it now
+    if [ "$version" = jessie ]; then
+        if grep -q '^deb.*debian.net' /etc/apt/sources.list && grep -q 'stable[ ]*main[ ]*rpi-jessie' /etc/apt/sources.list.d/xbian.list; then
+            sed -i 's/rpi-jessie/rpi2-jessie/g' /etc/apt/sources.list.d/xbian.list
+        fi
+        exit 0
+    fi
+
     [ "$version" = wheezy ] || exit 0
     upgrade_wheezy_to_jessie $config_platform
 fi
