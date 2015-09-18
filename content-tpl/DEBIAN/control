@@ -5,6 +5,7 @@ Section: repository
 Priority: optional
 Architecture: armhf
 Maintainer: mk01 <development@xbian.org>
+Depends: xbian-package-initramfs-tools (>=20150918)
 Conflicts: update-notifier-common
 Replaces: xbian-update
 Description: XBian repository package __DATE__. It installs XBian public apt keys and sources files.
