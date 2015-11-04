@@ -18,6 +18,27 @@ install_keys() {
     gpg --export -a CBF8D6FD518E17E1 | sudo apt-key add -
 }
 
+modify_xbian_preferences()
+{
+    [ -n "$1" ] || return 0
+
+    PF="/etc/apt/preferences.d/xbian"
+
+    case $1 in
+        imx6)
+            if ! grep -q "Package.*openssl" $PF; then
+                echo "" >> $PF
+                echo "Package: openssl libssl1.0.0 irqbalance-imx" >> $PF
+                echo "Pin: release o=XBian" >> $PF
+                echo "Pin-Priority: 1001" >> $PF
+            fi
+            ;;
+        *)
+            ;;
+    esac
+
+}
+
 upgrade_wheezy_to_jessie()
 {
     [ -n "$1" ] || return 0
@@ -75,6 +96,8 @@ if [ $1 = "configure" ]; then
     for k in /var/tmp/xbian.key/*.key; do 
         apt-key add $k
     done
+
+    modify_xbian_preferences $config_platform
 
     [ "$version" = wheezy ] || exit 0
     upgrade_wheezy_to_jessie $config_platform
