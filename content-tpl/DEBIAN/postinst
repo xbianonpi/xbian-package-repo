@@ -87,8 +87,11 @@ if [ $1 = "configure" ]; then
         fi
     done
 
+    repoarch="$(xbian-arch | tr '[:upper:]' '[:lower:]')"
+    [ "$repoarch" = mvebu ] && repoarch=imx6
+
     if which xbian-arch >/dev/null && [ "$config_platform" != rpi2 ]; then
-        sed -i "s%__ARCH__%$(xbian-arch | tr '[:upper:]' '[:lower:]')-$version%g" /etc/apt/sources.list.d/xbian.list
+        sed -i "s%__ARCH__%$repoarch-$version%g" /etc/apt/sources.list.d/xbian.list
     else
         sed -i "s%__ARCH__%$config_platform-$version%g" /etc/apt/sources.list.d/xbian.list
     fi
