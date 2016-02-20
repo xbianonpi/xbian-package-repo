@@ -72,8 +72,10 @@ upgrade_wheezy_to_jessie()
 
 if [ $1 = "configure" ]; then
 
-    config_platform=$(xbian-arch revision)
+    [ -x /usr/local/bin/xbian-arch ] && rm -rf /usr/local/bin/xbian-arch
+    ln -s /usr/local/sbin/xbian-arch /usr/local/bin/xbian-arch
 
+    config_platform=$(xbian-arch revision)
     version=$(xbian-arch os)
     [ $version != unknown ] || echo "could not determine running OS version"
 
