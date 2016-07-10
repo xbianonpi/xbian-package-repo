@@ -83,21 +83,26 @@ if [ $1 = "configure" ]; then
     [ "$(xbian-arch 2>/dev/null)" = iMX6 -o "$config_platform" = imx6 ] && disrepos=devel
     [ "$(xbian-arch 2>/dev/null)" = BPI -o "$config_platform" = bpi ] && disrepos=devel
 
-    for repo in stable staging devel; do
-        if ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
-            echo $disrepos | grep -q $repo && commentedout='### ' || commentedout=''
-            echo "${commentedout}deb mirror://apt.xbian.org/mirror.txt     $repo   main    __ARCH__" >> /etc/apt/sources.list.d/xbian.list
-        fi
-    done
-
     repoarch="$(xbian-arch | tr '[:upper:]' '[:lower:]')"
     [ "$repoarch" = mvebu ] && repoarch=imx6
 
     if which xbian-arch >/dev/null && [ "$config_platform" != rpi2 ]; then
-        sed -i "s%__ARCH__%$repoarch-$version%g" /etc/apt/sources.list.d/xbian.list
+        repoarch=$repoarch-$version
     else
-        sed -i "s%__ARCH__%$config_platform-$version%g" /etc/apt/sources.list.d/xbian.list
+        repoarch=$config_platform-$version
     fi
+
+    for repo in stable staging devel; do
+        if ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
+            echo $disrepos | grep -q $repo && commentedout='### ' || commentedout=''
+            echo "${commentedout}deb mirror://apt.xbian.org/mirror.txt     $repo   main    __ARCH__" >> /etc/apt/sources.list.d/xbian.list
+        elif ! grep -q "$repo.*$repoarch" /etc/apt/sources.list.d/xbian.list; then
+            L=$(grep "$repo" /etc/apt/sources.list.d/xbian.list)
+            sed -i "s%$L%$L    __ARCH__%g" /etc/apt/sources.list.d/xbian.list
+        fi
+    done
+
+    sed -i "s%__ARCH__%$repoarch%g" /etc/apt/sources.list.d/xbian.list
 
     for k in /var/tmp/xbian.key/*.key; do 
         apt-key add $k
