@@ -96,7 +96,7 @@ if [ $1 = "configure" ]; then
         if ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
             echo $disrepos | grep -q $repo && commentedout='### ' || commentedout=''
             echo "${commentedout}deb mirror://apt.xbian.org/mirror.txt     $repo   main    __ARCH__" >> /etc/apt/sources.list.d/xbian.list
-        elif ! grep -q "$repo.*$repoarch" /etc/apt/sources.list.d/xbian.list; then
+        elif ! grep -qE "$repo.*$repoarch|$repo.*__ARCH__" /etc/apt/sources.list.d/xbian.list; then
             L=$(grep "$repo" /etc/apt/sources.list.d/xbian.list)
             sed -i "s%$L%$L    __ARCH__%g" /etc/apt/sources.list.d/xbian.list
         fi
