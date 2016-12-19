@@ -5,12 +5,20 @@ revision=unknown
 os=unknown
 
 if [ "$1" = revision ]; then
-    grep -q BCM2708 /proc/cpuinfo 2>/dev/null && revision=rpi
-    grep -q BCM2836 /proc/cpuinfo 2>/dev/null && revision=rpi
-    grep -q BCM2709 /proc/cpuinfo 2>/dev/null && revision=rpi2
-    grep -q "i.MX6" /proc/cpuinfo 2>/dev/null && revision=imx6
+    if command -v rpi_revision > /dev/null; then
+        rpi_revision | grep -q BCM2835 && revision=rpi
+        rpi_revision | grep -q BCM2836 && revision=rpi2
+        rpi_revision | grep -q BCM2837 && revision=rpi2
+    else
+        grep -q BCM2708 /proc/cpuinfo 2>/dev/null && revision=rpi
+        grep -q BCM2836 /proc/cpuinfo 2>/dev/null && revision=rpi
+        grep -q BCM2709 /proc/cpuinfo 2>/dev/null && revision=rpi2
+        grep -q 'rpi2\-jessie' /etc/apt/sources.list.d/xbian.list && revision=rpi2
+    fi
     grep -q sun7i /proc/cpuinfo 2>/dev/null && revision=bpi
-    grep -q 'rpi2\-jessie' /etc/apt/sources.list.d/xbian.list && revision=rpi2
+    grep -q "i.MX6" /proc/cpuinfo 2>/dev/null && revision=imx6
+    grep -q "HummingBoard" /proc/cpuinfo && revision=imx6
+    grep -q "Cubox-i" /proc/cpuinfo && revision=imx6
     grep -q 'Clearfog A1' /proc/cpuinfo 2>/dev/null && revision=imx6
     echo $revision
     exit 0
@@ -20,14 +28,19 @@ elif [ "$1" = os ]; then
     elif [ -f /etc/debian_version ]; then
         grep -q "7\..*" /etc/debian_version && os="wheezy"
         grep -q "8\..*" /etc/debian_version && os="jessie"
+        grep -q "9\..*" /etc/debian_version && os="stretch"
     fi
     echo $os
     exit 0
 fi
 
 grep -q 'Clearfog' /proc/cpuinfo && platform='MVEBU'
-grep -q BCM2708 /proc/cpuinfo && platform='RPI'
-grep -q BCM2709 /proc/cpuinfo && platform='RPI'
+if command -v rpi_revision > /dev/null; then
+    rpi_revision | grep -qE "(BCM2835|BCM2836|BCM2837)" && platform='RPI'
+else
+    grep -q BCM2708 /proc/cpuinfo && platform='RPI'
+    grep -q BCM2709 /proc/cpuinfo && platform='RPI'
+fi
 grep -q sun7i /proc/cpuinfo && platform='BPI'
 grep -q "Freescale i.MX6" /proc/cpuinfo && platform='iMX6'
 grep -q "SolidRun i.MX6" /proc/cpuinfo && platform='iMX6'
