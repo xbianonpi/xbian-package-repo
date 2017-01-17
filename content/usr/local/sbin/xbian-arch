@@ -28,7 +28,8 @@ elif [ "$1" = os ]; then
     elif [ -f /etc/debian_version ]; then
         grep -q "7\..*" /etc/debian_version && os="wheezy"
         grep -q "8\..*" /etc/debian_version && os="jessie"
-        grep -q "9\..*" /etc/debian_version && os="stretch"
+        grep -qE "9\..*|stretch" /etc/debian_version && os="stretch"
+        grep -qE "10\..*|buster" /etc/debian_version && os="buster"
     fi
     echo $os
     exit 0
