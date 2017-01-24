@@ -1,6 +1,6 @@
 #!/bin/sh +e
 
-install_keys() {
+keys4jessie() {
     X=0;
     while [ $(gpg --recv-keys 8B48AD6246925553; echo $?) -ne 0 ] && [ $X lt 10 ]; do
         X=$(($X+1))
@@ -46,9 +46,9 @@ upgrade_wheezy_to_jessie()
     ### update wheezy rpi to raspbian/jessie rpi, any rpi2 to debian/jessie
     case $1 in
       rpi)
-        sed -i "s%deb[\ ]*http://mirrordirector.raspbian.org/raspbian.*wheezy%deb http://mirrordirector.raspbian.org/raspbian/ stable%g" /etc/apt/sources.list
+        sed -i "s%deb[\ ]*http://mirrordirector.raspbian.org/raspbian.*wheezy%deb http://mirrordirector.raspbian.org/raspbian/ jessie%g" /etc/apt/sources.list
         
-        install_keys
+        keys4jessie
         echo "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
 
         sed -i 's/rpi-wheezy/rpi-jessie/g' /etc/apt/sources.list.d/xbian.list
@@ -57,11 +57,11 @@ upgrade_wheezy_to_jessie()
         [ -e /etc/dpkg/origins/raspbian -a ! -e /etc/apt/sources.list.old.xbian.upgrade.jessie ] && \
             {
               mv /etc/apt/sources.list /etc/apt/sources.list.old.xbian.upgrade.jessie
-              echo 'deb http://http.debian.net/debian stable main non-free' > /etc/apt/sources.list
+              echo 'deb http://http.debian.net/debian jessie main non-free' > /etc/apt/sources.list
             }
 
         sed -i 's/rpi-wheezy/rpi2-jessie/g' /etc/apt/sources.list.d/xbian.list
-        install_keys
+        keys4jessie
         echo "!!!\nPlease upgrade packages again after this upgrade round\n!!!"
         ;;
       *)
@@ -104,9 +104,17 @@ if [ $1 = "configure" ]; then
 
     sed -i "s%__ARCH__%$repoarch%g" /etc/apt/sources.list.d/xbian.list
 
-    for k in /var/tmp/xbian.key/*.key; do 
-        apt-key add $k
-    done
+    if [ -n "$2" ]; then
+        # remove keys from the trusted.gpg file as they are now shipped as file in trusted.gpg.d
+        if dpkg --compare-versions "$2" 'lt' "20170124-0" && which gpg >/dev/null && which apt-key >/dev/null; then
+            TRUSTEDFILE='/etc/apt/trusted.gpg'
+            if [ -e "$TRUSTEDFILE" ]; then
+                for KEY in F4489B9B 529968ED; do
+                    apt-key --keyring "$TRUSTEDFILE" del $KEY &>/dev/null || :
+                done
+            fi
+        fi
+    fi
 
     modify_xbian_preferences $config_platform
 
