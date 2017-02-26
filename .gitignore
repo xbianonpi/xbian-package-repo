@@ -2,3 +2,4 @@
 md5sums
 .gen.changes
 content/DEBIAN
+*.deb
