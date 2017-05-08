@@ -107,6 +107,8 @@ upgrade_jessie_to_stretch()
 update_etc_issue()
 {
     [ $(cut -c 1 /etc/debian_version) == '9' ] && [ $(cut -c 17 /etc/issue) == '9' ] || echo 'XBian GNU/Linux 9 \n \l' | tee /etc/issue
+    [ $(cut -c 1 /etc/debian_version) == '9' ] && [ $(cut -c 17 /etc/issue.net) == '9' ] || echo 'XBian GNU/Linux 9' | tee /etc/issue.net
+
 }
 
 if [ $1 = "configure" ]; then
