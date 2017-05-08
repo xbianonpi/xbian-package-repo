@@ -104,6 +104,11 @@ upgrade_jessie_to_stretch()
 
 }
 
+update_etc_issue()
+{
+    [ $(cut -c 1 /etc/debian_version) == '9' ] && [ $(cut -c 17 /etc/issue) == '9' ] || echo 'XBian GNU/Linux 9 \n \l' | tee /etc/issue
+}
+
 if [ $1 = "configure" ]; then
 
     [ -x /usr/local/bin/xbian-arch ] && rm -rf /usr/local/bin/xbian-arch
@@ -159,6 +164,7 @@ if [ $1 = "configure" ]; then
     case $version in
         wheezy) upgrade_wheezy_to_jessie $config_platform ;;
         jessie) ;; # upgrade_jessie_to_stretch $config_platform ;;
+        stretch) update_etc_issue ;;
         *) ;;
     esac
 fi
