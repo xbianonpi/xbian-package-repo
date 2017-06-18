@@ -29,3 +29,7 @@ Pin-Priority: 1001
 Package: initramfs-tools
 Pin: release o=XBian
 Pin-Priority: 1001
+
+Package: vdr vdr-plugin-*
+Pin: release o=XBian
+Pin-Priority: 1001
