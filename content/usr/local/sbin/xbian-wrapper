@@ -1,0 +1,28 @@
+#!/bin/bash
+
+BASENAME=${0##*/}
+
+case $BASENAME in
+    udevadm)
+        # This is a workaround for preventing Kodi to crash while installing update(s)
+        # Under some conditions Kodi will crash when dpkg scripts are running command
+        # udevadm trigger ... (package pulseaudio does this)
+        if pgrep dpkg >/dev/null && pgrep "xbmc.bin|kodi.bin" >/dev/null && [ "$1" == trigger ]; then
+            echo $BASENAME $@
+            echo "$BASENAME $@" >>/var/run/reboot-required
+            exit 0
+        fi
+        exec /sbin/$BASENAME $@
+        ;;
+    invoke-rc.d)
+        # This is a workaround for preventing system to crash while installing update(s)
+        # Currently when running under Debian Stretch, system crashes mostly when udev
+        # package is being updated and a restart of daemon is invoked
+        if [ "$1" == udev ] && [ "$2" == restart ]; then
+            echo $BASENAME $@
+            echo "$BASENAME $@" >>/var/run/reboot-required
+            exit 0
+        fi
+        exec /usr/sbin/$BASENAME $@
+        ;;
+esac
