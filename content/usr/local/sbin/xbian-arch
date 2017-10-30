@@ -24,6 +24,14 @@ if [ "$1" = revision ]; then
     grep -q 'Clearfog A1' /proc/cpuinfo 2>/dev/null && revision=imx6
     echo $revision
     exit 0
+elif [ "$1" = machine ]; then
+    if grep -q ^Machine /proc/cpuinfo; then
+        machine=$(grep ^Machine /proc/cpuinfo | awk '{ print $3 }')
+    else
+        machine=$(arch)
+    fi
+    echo $machine
+    exit 0
 elif [ "$1" = os ]; then
     if which lsb_release >/dev/null; then
         os=$(lsb_release -c -s);
