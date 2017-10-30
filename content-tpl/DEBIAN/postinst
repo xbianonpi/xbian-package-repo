@@ -141,34 +141,42 @@ if [ $1 = "configure" ]; then
     [ "$(xbian-arch 2>/dev/null)" = iMX6 -o "$config_platform" = imx6 ] && disrepos=devel
     [ "$(xbian-arch 2>/dev/null)" = BPI -o "$config_platform" = bpi ] && disrepos=devel
 
-    repoarch="$(xbian-arch | tr '[:upper:]' '[:lower:]')"
-    [ "$repoarch" = mvebu ] && repoarch=imx6
-
-    if which xbian-arch >/dev/null && [ "$config_platform" != rpi2 ]; then
-        arch=$repoarch-
-        repoarch=$repoarch-$version
-    else
-        arch=$config_platform-
-        repoarch=$config_platform-$version
-    fi
+    case $config_platform in
+        rpi2|rpi3) arch=rpi2- ;;
+        rpi*)      arch=rpi-  ;;
+        mvebu)     arch=imx6- ;;
+        *)         arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
+    esac
+    repoarch=$arch$version
+    repomach=$(xbian-arch machine)-$version
 
     for repo in stable staging devel; do
-        if ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
+        if [ ! -e /etc/apt/sources.list.d/xbian.list ] || ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
             echo $disrepos | grep -q $repo && commentedout='### ' || commentedout=''
-            echo "${commentedout}deb mirror://apt.xbian.org/mirror.txt     $repo   main    __ARCH__" >> /etc/apt/sources.list.d/xbian.list
+            echo "${commentedout}deb mirror://apt.xbian.org/mirror.txt     $repo   main    __ARCH__    __MACH__" >> /etc/apt/sources.list.d/xbian.list
         elif ! grep -qE "$repo.*$repoarch|$repo.*__ARCH__" /etc/apt/sources.list.d/xbian.list; then
             orig_ifs=$IFS
             IFS="
 "
             for LI in $(grep "$repo" /etc/apt/sources.list.d/xbian.list); do
                 LO=$(echo "$LI " | sed "s%$arch.*[ \t\n]%%g" | sed "s%[ \t]*$%%")
-                sed -i "s%$LI%$LO    __ARCH__%g" /etc/apt/sources.list.d/xbian.list
+                sed -i "s%$LI%$LO    __ARCH__    __MACH__%g" /etc/apt/sources.list.d/xbian.list
+            done
+            IFS=$orig_ifs
+        elif ! grep -qE "$repo.*$repomach|$repo.*__MACH__" /etc/apt/sources.list.d/xbian.list; then
+            orig_ifs=$IFS
+            IFS="
+"
+            for LI in $(grep "$repo" /etc/apt/sources.list.d/xbian.list); do
+                LO=$(echo "$LI " | sed "s%$arch.*[ \t\n]%%g" | sed "s%[ \t]*$%%")
+                sed -i "s%$LI%$LO    __ARCH__    __MACH__%g" /etc/apt/sources.list.d/xbian.list
             done
             IFS=$orig_ifs
         fi
     done
 
     sed -i "s%__ARCH__%$repoarch%g" /etc/apt/sources.list.d/xbian.list
+    sed -i "s%__MACH__%$repomach%g" /etc/apt/sources.list.d/xbian.list
 
     if [ -n "$2" ]; then
         # remove keys from the trusted.gpg file as they are now shipped as file in trusted.gpg.d
