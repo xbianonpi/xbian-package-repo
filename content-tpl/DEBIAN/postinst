@@ -1,4 +1,4 @@
-#!/bin/sh +e
+#!/bin/bash +e
 
 #
 # Path definitions xbian-config GUI watches for message file msg4kodi
@@ -45,6 +45,17 @@ modify_xbian_preferences()
             ;;
     esac
 
+}
+
+update_xbian_issue()
+{
+    ver=$(cat /etc/debian_version | cut -f 1 -d '.')
+    code=$(xbian-arch os)
+    echo "XBian GNU/Linux "$ver" \\n \\l
+" > /etc/issue
+    echo "XBian GNU/Linux "$ver"
+" > /etc/issue.net
+    echo "$code" > /etc/xbian-codename
 }
 
 upgrade_wheezy_to_jessie()
@@ -201,4 +212,11 @@ if [ $1 = "configure" ]; then
         jessie) upgrade_repo $config_platform stretch "Debian Stretch" ;;
         *) sed -i -e "s%mirror://apt.xbian.org/mirror.txt%http://apt.xbian.org/%g" /etc/apt/sources.list.d/xbian.list ;;
     esac
+
+    dpkg-trigger --no-await trigger-xbian-package-repo
+
+elif [ $1 = "triggered" ]; then
+
+    update_xbian_issue
+
 fi
