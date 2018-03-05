@@ -12,16 +12,19 @@ if [ "$1" = revision ]; then
         elif rpi_revision | grep -qw "Model Zero W"; then revision=rpi0w
         elif rpi_revision | grep -qw "Model Zero"; then revision=rpi0
         fi
-    elif (( $(cat /proc/cpuinfo | grep -c ^processor) > 1 )); then
-        revision=rpi2
+    elif grep -qE "BCM2708|BCM2709|BCM2835|BCM2836|BCM2837" /proc/cpuinfo; then
+        if (( $(grep -c ^processor /proc/cpuinfo) > 1 )); then
+            revision=rpi2
+        else
+            revision=rpi
+        fi
     else
-        revision=rpi
+        grep -q sun7i /proc/cpuinfo 2>/dev/null && revision=bpi
+        grep -q "i.MX6" /proc/cpuinfo 2>/dev/null && revision=imx6
+        grep -q "HummingBoard" /proc/cpuinfo && revision=imx6
+        grep -q "Cubox-i" /proc/cpuinfo && revision=imx6
+        grep -q 'Clearfog A1' /proc/cpuinfo 2>/dev/null && revision=imx6
     fi
-    grep -q sun7i /proc/cpuinfo 2>/dev/null && revision=bpi
-    grep -q "i.MX6" /proc/cpuinfo 2>/dev/null && revision=imx6
-    grep -q "HummingBoard" /proc/cpuinfo && revision=imx6
-    grep -q "Cubox-i" /proc/cpuinfo && revision=imx6
-    grep -q 'Clearfog A1' /proc/cpuinfo 2>/dev/null && revision=imx6
     echo $revision
     exit 0
 elif [ "$1" = machine ]; then
