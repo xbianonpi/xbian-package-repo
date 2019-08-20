@@ -9,6 +9,7 @@ if [ "$1" = revision ]; then
         if rpi_revision | grep -q BCM2835; then revision=rpi
         elif rpi_revision | grep -q BCM2836; then revision=rpi2
         elif rpi_revision | grep -q BCM2837; then revision=rpi3
+        elif rpi_revision | grep -q BCM2838; then revision=rpi4
         elif rpi_revision | grep -qw "Model Zero W"; then revision=rpi0w
         elif rpi_revision | grep -qw "Model Zero"; then revision=rpi0
         fi
@@ -50,14 +51,11 @@ fi
 
 grep -q 'Clearfog' /proc/cpuinfo && platform='MVEBU'
 if command -v rpi_revision >/dev/null && ! rpi_revision | grep -q failed; then
-    rpi_revision | grep -qE "(BCM2835|BCM2836|BCM2837)" && platform='RPI'
+    rpi_revision | grep -qE "BCM2835|BCM2836|BCM2837|BCM2838" && platform='RPI'
 else
-    grep -qE "BCM2708|BCM2709|BCM2835|BCM2836|BCM2837" /proc/cpuinfo && platform='RPI'
+    grep -qE "BCM2708|BCM2709|BCM2835|BCM2836|BCM2837|BCM2838" /proc/cpuinfo && platform='RPI'
 fi
 grep -q sun7i /proc/cpuinfo && platform='BPI'
-grep -q "Freescale i.MX6" /proc/cpuinfo && platform='iMX6'
-grep -q "SolidRun i.MX6" /proc/cpuinfo && platform='iMX6'
-grep -q "HummingBoard" /proc/cpuinfo && platform='iMX6'
-grep -q "SolidRun Cubox-i" /proc/cpuinfo && platform='iMX6'
+grep -qE "Freescale i.MX6|SolidRun i.MX6|HummingBoard|SolidRun Cubox-i" /proc/cpuinfo && platform='iMX6'
 
 echo "$platform"
