@@ -141,8 +141,9 @@ esac
 
 if [ $1 = "configure" ]; then
 
-    [ -x /usr/local/bin/xbian-arch ] && rm -rf /usr/local/bin/xbian-arch
+    rm -f /usr/local/bin/xbian-arch /usr/bin/xbian-arch
     ln -s /usr/local/sbin/xbian-arch /usr/local/bin/xbian-arch
+    ln -s /usr/local/sbin/xbian-arch /usr/bin/xbian-arch
 
     config_platform=$(xbian-arch revision)
     version=$(xbian-arch os)
