@@ -211,6 +211,7 @@ if [ $1 = "configure" ]; then
     case $version in
         wheezy) upgrade_wheezy_to_jessie $config_platform ;;
         jessie) upgrade_repo $config_platform stretch "Debian Stretch" ;;
+        stretch) upgrade_repo $config_platform buster "Debian Buster" ;;
         *) sed -i -e "s%mirror://apt.xbian.org/mirror.txt%http://apt.xbian.org/%g" /etc/apt/sources.list.d/xbian.list ;;
     esac
 
