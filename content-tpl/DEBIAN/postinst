@@ -154,10 +154,10 @@ if [ $1 = "configure" ]; then
     [ "$(xbian-arch 2>/dev/null)" = BPI -o "$config_platform" = bpi ] && disrepos=devel
 
     case $config_platform in
-        rpi2|rpi3) arch=rpi2- ;;
-        rpi*)      arch=rpi-  ;;
-        mvebu)     arch=imx6- ;;
-        *)         arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
+        rpi[234]) arch=rpi2- ;;
+        rpi*)     arch=rpi-  ;;
+        mvebu)    arch=imx6- ;;
+        *)        arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
     esac
     repoarch=$arch$version
     repomach=$(xbian-arch machine)-$version
