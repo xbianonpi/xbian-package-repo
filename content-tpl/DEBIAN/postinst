@@ -165,7 +165,7 @@ if [ $1 = "configure" ]; then
     for repo in stable staging devel; do
         if [ ! -e /etc/apt/sources.list.d/xbian.list ] || ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
             echo $disrepos | grep -q $repo && commentedout='### ' || commentedout=''
-            echo "${commentedout}deb mirror://apt.xbian.org/mirror.txt     $repo   main    __ARCH__    __MACH__" >> /etc/apt/sources.list.d/xbian.list
+            echo "${commentedout}deb http://apt.xbian.org     $repo   main    __ARCH__    __MACH__" >> /etc/apt/sources.list.d/xbian.list
         elif ! grep -qE "$repo.*$repoarch|$repo.*__ARCH__" /etc/apt/sources.list.d/xbian.list; then
             orig_ifs=$IFS
             IFS="
