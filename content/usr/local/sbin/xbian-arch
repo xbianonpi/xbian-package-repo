@@ -44,6 +44,8 @@ elif [ "$1" = os ]; then
         grep -q "8\..*" /etc/debian_version && os="jessie"
         grep -qE "9\..*|stretch" /etc/debian_version && os="stretch"
         grep -qE "10\..*|buster" /etc/debian_version && os="buster"
+        grep -qE "11\..*|bullseye" /etc/debian_version && os="bullseye"
+        grep -qE "12\..*|bookworm" /etc/debian_version && os="bookworm"
     fi
     echo $os
     exit 0
