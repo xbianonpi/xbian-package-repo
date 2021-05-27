@@ -190,6 +190,10 @@ if [ $1 = "configure" ]; then
     sed -i "s%__ARCH__%$repoarch%g" /etc/apt/sources.list.d/xbian.list
     sed -i "s%__MACH__%$repomach%g" /etc/apt/sources.list.d/xbian.list
 
+    case $config_platform in
+        rpi[234]) sed -i "s%rpi-$version[\t ]*%%g" /etc/apt/sources.list.d/xbian.list ;;
+    esac
+
     if [ -n "$2" ]; then
         # remove keys from the trusted.gpg file as they are now shipped as file in trusted.gpg.d
         if dpkg --compare-versions "$2" 'lt' "20170124-0" && which gpg >/dev/null && which apt-key >/dev/null; then
