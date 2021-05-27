@@ -12,7 +12,7 @@ case $BASENAME in
             echo "$BASENAME $@" >>/var/run/reboot-required
             exit 0
         fi
-        exec /sbin/$BASENAME $@
+        exec /bin/$BASENAME $@
         ;;
     invoke-rc.d)
         # This is a workaround for preventing system to crash while installing update(s)
