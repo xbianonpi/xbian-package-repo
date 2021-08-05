@@ -14,7 +14,7 @@ Package: linux-headers-3.10.30-armmp linux-headers-3.10.51-armmp linux-headers-3
 Pin: release o=XBian
 Pin-Priority: 1001
 
-Package: firmware-imx libcec libcec2 libcec3 libcec-dev libcec4-dev cec-utils
+Package: firmware-imx libcec:armhf libcec2:armhf libcec3:armhf libcec4:armhf libcec6:armhf libcec-dev:armhf cec-utils:armhf
 Pin: release o=XBian
 Pin-Priority: 1001
 
@@ -26,7 +26,7 @@ Package: libdrm2 xserver-common xserver-xorg-core xserver-xorg-dev xserver-xorg-
 Pin: release o=XBian
 Pin-Priority: 1001
 
-Package: initramfs-tools
+Package: initramfs-tools init-system-helpers initscripts sysvinit-utils sysv-rc
 Pin: release o=XBian
 Pin-Priority: 1001
 
