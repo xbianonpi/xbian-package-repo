@@ -113,15 +113,14 @@ case $1 in
     rpi)
         sed -i \"s%deb[\ ]*http://archive.raspbian.org/raspbian.*$version%deb http://mirrordirector.raspbian.org/raspbian/ $toversion%g\" /etc/apt/sources.list
         sed -i \"s%deb[\ ]*http://mirrordirector.raspbian.org/raspbian.*$version%deb http://mirrordirector.raspbian.org/raspbian/ $toversion%g\" /etc/apt/sources.list
-        sed -i \"s/-$version/-$toversion/g\" /etc/apt/sources.list.d/xbian.list
         ;;
     *)
-        sed -i \"s%deb[\ ]*http://http.debian.net/debian.*$version%deb http://http.debian.net/debian $toversion%g\" /etc/apt/sources.list
-        sed -i \"s%deb[\ ]*http://httpredir.debian.org/debian.*$version%deb http://deb.debian.org/debian $toversion%g\" /etc/apt/sources.list
-        sed -i \"s%deb[\ ]*http://deb.debian.org/debian.*$version%deb http://deb.debian.org/debian $toversion%g\" /etc/apt/sources.list
-        sed -i \"s/-$version/-$toversion/g\" /etc/apt/sources.list.d/xbian.list
+        sed -i \"s/$version/$toversion/g\" /etc/apt/sources.list
         ;;
 esac
+for f in /etc/apt/sources.list.d/*.list; do
+    sed -i \"s/$version/$toversion/g\" \$f
+done
 " > /usr/local/sbin/xbian-update-repo
 
     chmod +x /usr/local/sbin/xbian-update-repo
@@ -216,6 +215,7 @@ if [ $1 = "configure" ]; then
         wheezy) upgrade_wheezy_to_jessie $config_platform ;;
         jessie) upgrade_repo $config_platform stretch "Debian Stretch" ;;
         stretch) upgrade_repo $config_platform buster "Debian Buster" ;;
+        buster) upgrade_repo $config_platform bullseye "Debian Bullseye" ;;
         *) sed -i -e "s%mirror://apt.xbian.org/mirror.txt%http://apt.xbian.org/%g" /etc/apt/sources.list.d/xbian.list ;;
     esac
 
