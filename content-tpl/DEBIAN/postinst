@@ -56,6 +56,11 @@ update_xbian_issue()
     echo "XBian GNU/Linux "$ver"
 " > /etc/issue.net
     echo "$code" > /etc/xbian-codename
+    ver=$(($(date +%Y)-2012)).0
+    sed -i "s/^PRETTY_NAME=.*/PRETTY_NAME=\"XBian $ver - ${code^}\"/g;s/^VERSION=.*/VERSION=\"XBian $ver - ${code^}\"/g;s/1.0/$ver/g" /etc/os-release
+    . /etc/os-release
+    ver=$(grep -o "20[23].*-[0-9] " /etc/motd)
+    sed -i "s/^ .*XBian.*/   $PRETTY_NAME - $ver- Bleeding Edge, 2012-$(date +%Y)/g" /etc/motd
 }
 
 upgrade_wheezy_to_jessie()
