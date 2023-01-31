@@ -164,7 +164,7 @@ if [ $1 = "configure" ]; then
         *)        arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
     esac
     repoarch=$arch$version
-    repomach=$(xbian-arch machine)-$version
+    repomach=$(echo $(xbian-arch machine)-$version | sed "s/aarch64/armv7l/g")
 
     for repo in stable staging devel; do
         if [ ! -e /etc/apt/sources.list.d/xbian.list ] || ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
