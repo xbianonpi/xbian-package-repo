@@ -38,16 +38,17 @@ elif [ "$1" = machine ]; then
     echo $machine
     exit 0
 elif [ "$1" = os ]; then
-    if which lsb_release >/dev/null; then
-        os=$(lsb_release -c -s);
-    elif [ -f /etc/debian_version ]; then
+    os='n/a'
+    if [ -f /etc/debian_version ]; then
         grep -q "7\..*" /etc/debian_version && os="wheezy"
         grep -q "8\..*" /etc/debian_version && os="jessie"
         grep -qE "9\..*|stretch" /etc/debian_version && os="stretch"
         grep -qE "10\..*|buster" /etc/debian_version && os="buster"
         grep -qE "11\..*|bullseye" /etc/debian_version && os="bullseye"
         grep -qE "12\..*|bookworm" /etc/debian_version && os="bookworm"
+        grep -qE "13\..*|trixie" /etc/debian_version && os="trixie"
     fi
+    [ "$os" = 'n/a' ] && command -v lsb_release >/dev/null && os=$(lsb_release -c -s)
     echo $os
     exit 0
 fi
