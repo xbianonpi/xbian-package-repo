@@ -25,4 +25,23 @@ case $BASENAME in
         fi
         exec /usr/sbin/$BASENAME $@
         ;;
+    update-rc.d)
+        # This is a workaround for preventing dist-upgrade to break while
+        # open-iscsi is going to be upgraded
+        if [ "$1" == iscsid -o "$1" == open-iscsi ] && [ "$2" == defaults-disabled ]; then
+            exit 0
+        fi
+        [ -x /usr/sbin/$BASENAME ] && exec /usr/sbin/$BASENAME $@
+        [ -x /usr/bin/$BASENAME ] && exec /usr/bin/$BASENAME $@
+        ;;
+    mountpoint)
+        # This is a workaround for preventing package usrmerge
+        # fails installing if /lib/modules is a mountpoint
+        # See Debian Bug #1021180
+        if [ "$1" == '-q' ] && [ "$2" == '/lib/modules/' ]; then
+            umount -l /lib/modules
+            ( sleep 60 && mount /lib/modules; ) &
+        fi
+        exec /bin/$BASENAME $@
+        ;;
 esac
