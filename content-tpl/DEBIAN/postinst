@@ -59,6 +59,7 @@ update_xbian_issue()
     ver=$(($(date +%Y)-2012)).0
     sed -i "s/^PRETTY_NAME=.*/PRETTY_NAME=\"XBian $ver - ${code^}\"/g;s/^VERSION=.*/VERSION=\"XBian $ver - ${code^}\"/g;s/ 1.0/ $ver/g;s/=1.0/=$ver/g" /etc/os-release
     . /etc/os-release
+    grep -q "VERSION_CODENAME=" /etc/os-release && sed -i "s/VERSION_CODENAME=.*/VERSION_CODENAME=$code/g" /etc/os-release || echo "VERSION_CODENAME=$code" >> /etc/os-release
     ver=$(grep -o "20[23].*-[0-9] " /etc/motd)
     sed -i "s/^ .*XBian.*/   $PRETTY_NAME - $ver- Bleeding Edge, 2012-$(date +%Y)/g" /etc/motd
 }
