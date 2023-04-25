@@ -97,9 +97,10 @@ upgrade_wheezy_to_jessie()
 
 upgrade_repo()
 {
-    [ $# -eq 3 ] || return 0
+    [ $# -ge 3 ] || return 0
     toversion=$2
     todistribution=$3
+    areas=$4
 
     echo "#!/bin/bash
 
@@ -126,6 +127,17 @@ case $1 in
 esac
 for f in /etc/apt/sources.list.d/*.list; do
     sed -i \"s/$version/$toversion/g\" \$f
+done
+
+for area in $areas; do
+    hits=\"\$(grep -c ^deb.*debian.*\$area /etc/apt/sources.list)\"
+    if [ \"\$hits\" -eq 0 ]; then
+       lines=\$(grep ^deb.*debian /etc/apt/sources.list)
+       IFS=\$'\n'
+       for line in \$lines; do
+           echo \$line | grep -q \$area || sed -i \"s|\$line|\$line \$area|g\" /etc/apt/sources.list
+       done
+    fi
 done
 " > /usr/local/sbin/xbian-update-repo
 
