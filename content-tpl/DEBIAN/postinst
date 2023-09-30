@@ -234,6 +234,7 @@ if [ $1 = "configure" ]; then
         jessie) upgrade_repo $config_platform stretch "Debian Stretch" ;;
         stretch) upgrade_repo $config_platform buster "Debian Buster" ;;
         buster) upgrade_repo $config_platform bullseye "Debian Bullseye" ;;
+        bullseye) upgrade_repo $config_platform bookworm "Debian Bookworm" "contrib non-free-firmware" ;;
         *) sed -i -e "s%mirror://apt.xbian.org/mirror.txt%http://apt.xbian.org/%g" /etc/apt/sources.list.d/xbian.list ;;
     esac
 
