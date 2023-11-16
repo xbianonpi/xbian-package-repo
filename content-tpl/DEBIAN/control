@@ -3,7 +3,7 @@ Package: xbian-package-repo
 Version: __DATE__
 Section: repository
 Priority: optional
-Architecture: armhf
+Architecture: all
 Maintainer: mk01 <development@xbian.org>
 Conflicts: update-notifier-common
 Replaces: xbian-update, base-files, xbian-package-initramfs-tools
