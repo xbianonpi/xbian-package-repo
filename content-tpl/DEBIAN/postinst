@@ -177,7 +177,12 @@ if [ $1 = "configure" ]; then
         *)        arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
     esac
     repoarch=$arch$version
-    repomach=$(echo $(xbian-arch machine)-$version | sed "s/aarch64/armv7l/g")
+    case "$(xbian-arch machine)" in
+        armv6l)  repomach=armv6l ;;
+        armv7l)  repomach=armv7l ;;
+        aarch64) [ "$(dpkg --print-architecture)" = arm64 ] && repomach=arm64 || repomach=armv7l ;;
+    esac
+    repomach="$repomach-$version"
 
     for repo in stable staging devel; do
         if [ ! -e /etc/apt/sources.list.d/xbian.list ] || ! grep -q "$repo" /etc/apt/sources.list.d/xbian.list; then
