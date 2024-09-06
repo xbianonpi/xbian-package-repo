@@ -26,7 +26,7 @@ Package: libdrm2 xserver-common xserver-xorg-core xserver-xorg-dev xserver-xorg-
 Pin: release o=XBian
 Pin-Priority: 1001
 
-Package: initramfs-tools init-system-helpers initscripts sysvinit-utils sysv-rc
+Package: initramfs-tools initramfs-tools-core init-system-helpers initscripts sysvinit-utils sysv-rc
 Pin: release o=XBian
 Pin-Priority: 1001
 
