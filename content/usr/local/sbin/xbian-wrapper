@@ -7,7 +7,7 @@ case $BASENAME in
         # This is a workaround for preventing Kodi to crash while installing update(s)
         # Under some conditions Kodi will crash when dpkg scripts are running command
         # udevadm trigger ... (package pulseaudio does this)
-        if pgrep dpkg >/dev/null && pgrep "xbmc.bin|kodi.bin" >/dev/null && [ "$1" == trigger ]; then
+        if pgrep dpkg >/dev/null && pgrep -f "xbmc.bin|kodi.bin" >/dev/null && [ "$1" == trigger ]; then
             echo $BASENAME $@
             echo "$BASENAME $@" >>/var/run/reboot-required
             exit 0
@@ -22,6 +22,10 @@ case $BASENAME in
             echo $BASENAME $@
             echo "$BASENAME $@" >>/var/run/reboot-required
             exit 0
+        # Some packages (rsyslog for example) use invoke-rc.d <service> rotate for
+        # repopening logfiles. Map rotate to reload command in this case
+        elif [ "$2" == rotate ]; then
+            set -- $1 reload $3 $4 $5
         fi
         exec /usr/sbin/$BASENAME $@
         ;;
