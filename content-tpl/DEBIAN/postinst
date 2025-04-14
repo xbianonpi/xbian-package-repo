@@ -171,16 +171,17 @@ if [ $1 = "configure" ]; then
     [ "$(xbian-arch 2>/dev/null)" = BPI -o "$config_platform" = bpi ] && disrepos=devel
 
     case $config_platform in
-        rpi[234]) arch=rpi2- ;;
-        rpi*)     arch=rpi-  ;;
-        mvebu)    arch=imx6- ;;
-        *)        arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
+        rpi[2345]) arch=rpi2- ;;
+        rpi*)      arch=rpi-  ;;
+        mvebu)     arch=imx6- ;;
+        *)         echo "FIXME: Unknown hardware"; arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
     esac
     repoarch=$arch$version
     case "$(xbian-arch machine)" in
         armv6l)  repomach=armv6l ;;
         armv7l)  repomach=armv7l ;;
         aarch64) [ "$(dpkg --print-architecture)" = arm64 ] && repomach=arm64 || repomach=armv7l ;;
+        *)       echo "FIXME: Unknown architecture" ;;
     esac
     repomach="$repomach-$version"
 
@@ -213,7 +214,7 @@ if [ $1 = "configure" ]; then
     sed -i "s%__MACH__%$repomach%g" /etc/apt/sources.list.d/xbian.list
 
     case $config_platform in
-        rpi[234]) sed -i "s%rpi-$version[\t ]*%%g" /etc/apt/sources.list.d/xbian.list ;;
+        rpi[2345]) sed -i "s%rpi-$version[\t ]*%%g" /etc/apt/sources.list.d/xbian.list ;;
     esac
 
     if [ -n "$2" ]; then
@@ -228,9 +229,11 @@ if [ $1 = "configure" ]; then
         fi
     fi
 
-    sed -i "s%deb[\ ]*http://mirrordirector.raspbian.org/raspbian.*stable%deb http://mirrordirector.raspbian.org/raspbian/ $version%g" /etc/apt/sources.list
-    sed -i "s%deb[\ ]*http://http.debian.net/debian.*stable%deb http://http.debian.net/debian $version%g" /etc/apt/sources.list
-    sed -i "s%deb[\ ]*http://httpredir.debian.org/debian.*stable%deb http://httpredir.debian.org/debian $version%g" /etc/apt/sources.list
+    if [ -e /etc/apt/sources.list ]; then
+        sed -i "s%deb[\ ]*http://mirrordirector.raspbian.org/raspbian.*stable%deb http://mirrordirector.raspbian.org/raspbian/ $version%g" /etc/apt/sources.list
+        sed -i "s%deb[\ ]*http://http.debian.net/debian.*stable%deb http://http.debian.net/debian $version%g" /etc/apt/sources.list
+        sed -i "s%deb[\ ]*http://httpredir.debian.org/debian.*stable%deb http://httpredir.debian.org/debian $version%g" /etc/apt/sources.list
+    fi
 
     modify_xbian_preferences $config_platform
 
