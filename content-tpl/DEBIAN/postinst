@@ -164,17 +164,17 @@ if [ $1 = "configure" ]; then
 
     config_platform=$(xbian-arch revision)
     version=$(xbian-arch os)
-    [ $version != unknown ] || echo "could not determine running OS version"
+    [ $version != unknown ] || echo "FIXME: Could not determine running OS version"
 
     disrepos="staging devel"
     [ "$(xbian-arch 2>/dev/null)" = iMX6 -o "$config_platform" = imx6 ] && disrepos=devel
     [ "$(xbian-arch 2>/dev/null)" = BPI -o "$config_platform" = bpi ] && disrepos=devel
 
     case $config_platform in
-        rpi[2345]) arch=rpi2- ;;
-        rpi*)      arch=rpi-  ;;
-        mvebu)     arch=imx6- ;;
-        *)         echo "FIXME: Unknown hardware"; arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
+        rpi[2345])  arch=rpi2- ;;
+        rpi*)       arch=rpi-  ;;
+        mvebu|imx6) arch=imx6- ;;
+        *)          echo "FIXME: Unknown hardware"; arch=$(xbian-arch | tr '[:upper:]' '[:lower:]')- ;;
     esac
     repoarch=$arch$version
     case "$(xbian-arch machine)" in
@@ -237,14 +237,17 @@ if [ $1 = "configure" ]; then
 
     modify_xbian_preferences $config_platform
 
-    case $version in
-        wheezy) upgrade_wheezy_to_jessie $config_platform ;;
-        jessie) upgrade_repo $config_platform stretch "Debian Stretch" ;;
-        stretch) upgrade_repo $config_platform buster "Debian Buster" ;;
-        buster) upgrade_repo $config_platform bullseye "Debian Bullseye" ;;
-        bullseye) upgrade_repo $config_platform bookworm "Debian Bookworm" "contrib non-free-firmware" ;;
-        *) sed -i -e "s%mirror://apt.xbian.org/mirror.txt%http://apt.xbian.org/%g" /etc/apt/sources.list.d/xbian.list ;;
-    esac
+    if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; then
+        sed -i -e "s%mirror://apt.xbian.org/mirror.txt%http://apt.xbian.org/%g" /etc/apt/sources.list.d/xbian.list
+    else
+        case $version in
+            wheezy) upgrade_wheezy_to_jessie $config_platform ;;
+            jessie) upgrade_repo $config_platform stretch "Debian Stretch" ;;
+            stretch) upgrade_repo $config_platform buster "Debian Buster" ;;
+            buster) upgrade_repo $config_platform bullseye "Debian Bullseye" ;;
+            bullseye) upgrade_repo $config_platform bookworm "Debian Bookworm" "contrib non-free-firmware" ;;
+        esac
+    fi
 
     dpkg-trigger --no-await trigger-xbian-package-repo
 
