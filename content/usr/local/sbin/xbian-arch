@@ -4,6 +4,14 @@ platform=unknown
 revision=unknown
 os=unknown
 
+get_cpuinfo() {
+    if [ -e /run/cpuinfo ] && [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; then
+        echo /run/cpuinfo
+    else
+        echo /proc/cpuinfo
+    fi
+}
+
 if [ "$1" = revision ]; then
     if command -v rpi_revision >/dev/null && ! rpi_revision | grep -q failed; then
         if rpi_revision | grep -q BCM2835; then revision=rpi
@@ -15,24 +23,28 @@ if [ "$1" = revision ]; then
         elif rpi_revision | grep -qw "Model Zero W"; then revision=rpi0w
         elif rpi_revision | grep -qw "Model Zero"; then revision=rpi0
         fi
-    elif grep -qE "BCM2708|BCM2709|BCM2835|BCM2836|BCM2837" /proc/cpuinfo; then
-        if (( $(grep -c ^processor /proc/cpuinfo) > 1 )); then
-            revision=rpi2
-        else
-            revision=rpi
-        fi
     else
-        grep -q sun7i /proc/cpuinfo 2>/dev/null && revision=bpi
-        grep -q "i.MX6" /proc/cpuinfo 2>/dev/null && revision=imx6
-        grep -q "HummingBoard" /proc/cpuinfo && revision=imx6
-        grep -q "Cubox-i" /proc/cpuinfo && revision=imx6
-        grep -q 'Clearfog A1' /proc/cpuinfo 2>/dev/null && revision=imx6
+        cpuinfo=$(get_cpuinfo)
+        if grep -qE "BCM2708|BCM2709|BCM2835|BCM2836|BCM2837" $cpuinfo; then
+            if (( $(grep -c ^processor $cpuinfo) > 1 )); then
+                revision=rpi2
+            else
+                revision=rpi
+            fi
+        else
+            grep -q sun7i $cpuinfo 2>/dev/null && revision=bpi
+            grep -q "i.MX6" $cpuinfo 2>/dev/null && revision=imx6
+            grep -q "HummingBoard" $cpuinfo && revision=imx6
+            grep -q "Cubox-i" $cpuinfo && revision=imx6
+            grep -q 'Clearfog A1' $cpuinfo 2>/dev/null && revision=imx6
+        fi
     fi
     echo $revision
     exit 0
 elif [ "$1" = machine ]; then
-    if grep -q ^Machine /proc/cpuinfo; then
-        machine=$(grep ^Machine /proc/cpuinfo | awk '{ print $3 }')
+    cpuinfo=$(get_cpuinfo)
+    if grep -q ^Machine $cpuinfo; then
+        machine=$(grep ^Machine $cpuinfo | awk '{ print $3 }')
     else
         machine=$(arch)
     fi
@@ -54,13 +66,15 @@ elif [ "$1" = os ]; then
     exit 0
 fi
 
-grep -q 'Clearfog' /proc/cpuinfo && platform='MVEBU'
+cpuinfo=$(get_cpuinfo)
+
+grep -q 'Clearfog' $cpuinfo && platform='MVEBU'
 if command -v rpi_revision >/dev/null && ! rpi_revision | grep -q failed; then
     rpi_revision | grep -qE "BCM2835|BCM2836|BCM2837|BCM2838|BCM2711|BCM2712" && platform='RPI'
 else
-    grep -qE "BCM2708|BCM2709|BCM2835|BCM2836|BCM2837|BCM2838|BCM2711|BCM2712" /proc/cpuinfo && platform='RPI'
+    grep -qE "BCM2708|BCM2709|BCM2835|BCM2836|BCM2837|BCM2838|BCM2711|BCM2712" $cpuinfo && platform='RPI'
 fi
-grep -q sun7i /proc/cpuinfo && platform='BPI'
-grep -qE "Freescale i.MX6|SolidRun i.MX6|HummingBoard|SolidRun Cubox-i" /proc/cpuinfo && platform='iMX6'
+grep -q sun7i $cpuinfo && platform='BPI'
+grep -qE "Freescale i.MX6|SolidRun i.MX6|HummingBoard|SolidRun Cubox-i" $cpuinfo && platform='iMX6'
 
 echo "$platform"
